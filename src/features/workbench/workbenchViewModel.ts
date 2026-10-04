@@ -106,8 +106,13 @@ export function useWorkspaceViewModel(repository?: WorkspaceRepository): Workspa
   }, [activePlan, updateActivePlan])
 
   const removeItem = useCallback((id: string) => {
-    updateActivePlan((plan) => ({ ...plan, items: plan.items.filter((item) => item.id !== id) }), '设备已移除')
-    setSelectedItemId((current) => current === id ? null : current)
+    let nextSelectedId: string | null = null
+    updateActivePlan((plan) => {
+      const index = plan.items.findIndex((item) => item.id === id)
+      nextSelectedId = plan.items[index + 1]?.id ?? plan.items[index - 1]?.id ?? null
+      return { ...plan, items: plan.items.filter((item) => item.id !== id) }
+    }, '设备已移除')
+    setSelectedItemId((current) => current === id ? nextSelectedId : current)
   }, [updateActivePlan])
 
   const moveItem = useCallback((id: string, x: number, y: number) => {
