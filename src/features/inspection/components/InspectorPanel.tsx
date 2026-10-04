@@ -19,6 +19,10 @@ function NumericField({ label, value, onChange }: { label: string; value: number
 export function InspectorPanel({ plan, item, issueIds, onUpdateDesk, onUpdateItem, onRotate, onDelete }: InspectorPanelProps) {
   const isIssue = item ? issueIds.includes(item.id) : false
   const definition = item ? getDeviceDefinition(item.type) : null
+  const handleDelete = (id: string) => {
+    onDelete(id)
+    document.getElementById('focusdesk-canvas')?.focus()
+  }
   return (
     <aside className="inspector-panel">
       <div className="module-heading">
@@ -48,7 +52,7 @@ export function InspectorPanel({ plan, item, issueIds, onUpdateDesk, onUpdateIte
             <NumericField label="Y" value={Math.round(item.y)} onChange={(value) => onUpdateItem(item.id, { y: value })} />
           </div>
           <div className="rotation-row"><span><Crosshair size={15} /> 旋转角度 <strong>{Math.round(item.rotation)}°</strong></span><div className="rotation-actions"><button aria-label="逆时针旋转 15 度" onClick={() => onRotate(item.id, -15)} type="button"><RotateCcw size={15} /></button><button aria-label="顺时针旋转 15 度" onClick={() => onRotate(item.id, 15)} type="button"><RotateCw size={15} /></button></div></div>
-          <button className="remove-item-button" onClick={() => onDelete(item.id)} type="button"><Trash2 size={15} /> 移除这个设备</button>
+          <button className="remove-item-button" onClick={() => handleDelete(item.id)} type="button"><Trash2 size={15} /> 移除这个设备</button>
         </div>
       ) : (
         <div className="empty-inspector"><span className="empty-illustration">⌖</span><strong>选择一个设备</strong><p>点击画布上的设备查看尺寸、位置和旋转控制。</p></div>
